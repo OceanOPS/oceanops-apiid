@@ -1,5 +1,7 @@
 package org.oceanops.api.id;
 
+import org.apache.cayenne.ObjectContext;
+import org.apache.cayenne.query.SelectById;
 import org.oceanops.api.Authentication;
 
 import javax.ws.rs.POST;
@@ -18,7 +20,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import org.oceanops.api.exceptions.MissingMetadataException;
-
+import org.oceanops.api.orm.NcLevel;
+import org.oceanops.api.orm.NcNotification;
+import org.oceanops.api.orm.NcTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +69,51 @@ public class WebServiceManager {
 			throw new NotAuthorizedException("Authentication required", Response.status(Status.UNAUTHORIZED));
 		}
 		
+		// Creating notification
+		if(response.size() > 0){
+			try{
+				ObjectContext dataContext = Utils.getCayenneContext();
+				NcNotification notif = dataContext.newObject(NcNotification.class);
+				NcTopic ncTopic = SelectById.query(NcTopic.class, 701).selectOne(dataContext);
+				notif.setNcTopic(ncTopic);
+				notif.setContact(Authentication.getContact());
+				NcLevel ncLevel = SelectById.query(NcLevel.class, 20).selectOne(dataContext);
+				notif.setNcLevel(ncLevel);
+				notif.setIsPrivate(1);
+				notif.setNotificationDate(LocalDateTime.now());
+				notif.setName("[INFO] New ID allocation");
+				String description = "User ";
+				if(Authentication.getContact() != null)
+					description += Authentication.getContact().getLogin();
+				else{
+					// SHOULD NOT HAPPEN
+					description += "!!! UNKNOWN !!!";
+					logger.warn("Request made by unknown user");
+				}
+				
+				String listIds = "";
+				int nbIds = 0;
+				for (IdResponse idResponse : response) {
+					if(idResponse.getRef() != null){
+						if(listIds.length() > 0){
+							listIds += ", ";
+						}
+						nbIds++;
+						listIds += idResponse.getRef();
+					}
+				}
+				description += " has requested " + nbIds + " IDs: ";
+				description += listIds;
+				notif.setDescription(description);
+				if(nbIds > 0)
+					dataContext.commitChanges();
+				else
+					dataContext.rollbackChanges();
+			}
+			catch(Exception e){
+				logger.error("Impossible to create notification: " + e.getMessage());
+			}
+		}
 		return response;
 	}
 }
