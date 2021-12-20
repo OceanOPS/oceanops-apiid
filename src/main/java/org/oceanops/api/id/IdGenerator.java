@@ -129,7 +129,7 @@ public class IdGenerator {
 	 * @return The computed WIGOS identifier
 	 */
 	private String getWIGOSRef(String ref) throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_wigosid_from_ref($ref) from dual", String.class)
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_wigosid_from_ref(#bind($ref)) from dual", String.class)
 			.param("ref", ref)
 			.selectOne(context);
 		
@@ -141,7 +141,7 @@ public class IdGenerator {
 	 * @return The computed reference
 	 */
 	private String getRefFromWmoId(String wmoId) throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_ref_from_wmo($wmoId) from dual", String.class)
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_ref_from_wmo(#bind($wmoId)) from dual", String.class)
 			.param("wmoId", wmoId)
 			.selectOne(context);
 		
