@@ -16,7 +16,15 @@
         </init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
+	<servlet>
+		<servlet-name>OpenApiDefinition</servlet-name>
+		<servlet-class>org.oceanops.api.id.OpenApiDefinition</servlet-class>
+	</servlet>
 
+	<servlet-mapping>
+		<servlet-name>OpenApiDefinition</servlet-name>
+		<url-pattern>/app/oceanops-apiid.yaml</url-pattern>
+	</servlet-mapping>
 	<servlet-mapping>
 		<servlet-name>JerseyWebApplication</servlet-name>
 		<url-pattern>/app/*</url-pattern>

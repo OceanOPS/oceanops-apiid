@@ -1,0 +1,299 @@
+openapi: 3.0.3
+servers:
+  - url: https://www.ocean-ops.org/apiid/1
+info:
+  title: OceanOPS API allocating identifiers
+  description: An API to request WMO/GTS-WIGOS-OceanOPS identifiers. Concepts and procedures involved in the usage of this API are detailled in [OceanOPS' metadata documentation](https://ocean-ops.org/metadata).
+  version: ${project.version}
+  contact:
+    name: API Support
+    url: https://ocean-ops.org/api
+    email: dev@ocean-ops.org
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+
+tags:
+  - name: Request identifiers
+    description: Request identifiers for several types of observing instruments.
+
+components:
+  schemas:
+    IdInput:
+      type: object
+      required:
+        - program
+        - startDate
+      properties:
+        gtsId:
+          type: string
+          description: If already known, the GTS identifier. Typically a 7-character string.
+        program:
+          type: string
+          description: The [program](https://www.ocean-ops.org/api/1/help/?param=program) to which this record will be affiliated. The user must have editing rights within that program.
+        model:
+          type: string
+          description: The [platform model](https://www.ocean-ops.org/api/1/help/?param=platformmodel?include=[%22id%22,%22name%22,%22nameShort%22,%22weblink.url%22]) of this record. 
+            If not provided, the API will attempt to infer it from the program's default setup.
+        batchStatus:
+          type: string
+          description: If applicable, specify the status of this batch of instruments. Value should be one of "FUNDED", "ORDERED", "IN STOCK".
+        longitude:
+          type: number
+          description: Longitude in decimal number WGS84. If not provided, the API will attempt to infer it from the program's lead agency, or will default to 0.
+        latitude:
+          type: number
+          description: Latitude in decimal number WGS84. If not provided, the API will attempt to infer it from the program's lead agency, or will default to 0.
+        serialNo:
+          type: string
+          description: The serial number of this instrument.
+        internalId:
+          type: string
+          description: Internal/user identifier associated with this instrument, if any.
+        startDate:
+          type: string
+          format: date-time
+          description: ISO date-time indicating when this instrument should be deployed/start operating.
+        endDate: 
+          type: string
+          format: date-time
+          description: ISO date-time indicating when this instrument has stopped operating.
+  securitySchemes:    
+    apiKeyId:
+      type: apiKey
+      name: X-OceanOPS-Metadata-ID
+      in: header
+    apiKeyToken:
+        type: apiKey
+        name: X-OceanOPS-Metadata-Token
+        in: header
+  examples:
+    argo:
+      summary: Profiling float
+      description: An example for profiling floats, micro floats, ice tethered profilers, polar ocean profiling systems, deep floats, etc.
+      value:
+        - program: Argo CANADA
+          model: APEX
+          batchStatus: IN STOCK
+          longitude: -52
+          latitude: 36
+          startDate: "2022-06-15T12:00:00"
+        - program: Argo CANADA
+          startDate: "2022-06-16T12:00:00"
+          model: APEX
+          batchStatus: IN STOCK
+          longitude: -51
+          latitude: 30
+    surfaceDrifter:
+      summary: Surface drifter/ice drifter
+      value:
+        - program: SIO-DB
+          model: SVP SIO
+          startDate: "2022-10-10T19:36:00"
+    fixedSystemExistingGTSID:
+      summary: Fixed system w/ existing GTS ID
+      description: |
+        An example of a fixed systems (moored buoys, mooring SITES, HF Radars, tide gauges, etc.) with an existing GTS identifier. 
+        Will allocated OceanOPS/WIGOS identifiers if not overlapping with a current allocation of that GTS identifier.
+        An end date can be provided if the system is already closed.
+      value:
+        - gtsId: "3801001"
+          program: OS-GEOMAR
+          model: Subsurface Mooring Custom
+          startDate: "2019-10-30T20:37:00"
+    fixedSystem:
+      summary: Fixed system
+      description: |
+        An example of a fixed systems (moored buoys, mooring SITES, HF Radars, tide gauges, etc.). 
+        In order to determine the GTS identifier (dependent on the WMO area), the coordinates are mandatory.
+      value:
+        - program: OS-GEOMAR
+          model: Subsurface Mooring Custom
+          startDate: "2019-10-30T20:37:00"
+          latitude: -13
+          longitude: -37
+    marineAnimal:
+      summary: Marine animal
+      description: An example of a marine animal.
+      value:
+        - program: MEOP IMOS
+          model: CTD-SRDL
+          startDate: "2022-10-10T19:36:00"
+    subSurfaceAuto:
+      summary: Subsurface autonomous platform, glider
+      description: Subsurface autonomous platform, glider
+      value:
+        - program: HCMR glider program
+          model: Seaexplorer
+          startDate: "2022-10-10T19:36:00"
+    shipBased:
+      summary: Ship-based instrument
+      description: Ship-based instrument
+      value:
+        - program: VOS-DE
+          model: TURBOWIN
+          startDate: "2022-10-10T19:36:00"
+    otherSurfaceAuto:
+      summary: Other autonomous surface instrument (saildrone, wave glider, etc.)
+      description: Other autonomous surface instrument (saildrone, wave glider, etc.)
+      value:
+        - program: Saildrone
+          model: SAILDRONE
+          startDate: "2022-10-10T19:36:00"
+
+
+paths:
+  /getid:
+    post:
+      tags:
+        - Request identifiers
+      summary: Lets the user request new identifiers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/IdInput'
+            examples:
+              argo:
+                $ref: '#/components/examples/argo'
+              surfaceDrifter:
+                $ref: '#/components/examples/surfaceDrifter'
+              fixedSystemExistingGTSID:
+                $ref: '#/components/examples/fixedSystemExistingGTSID'
+              fixedSystem:
+                $ref: '#/components/examples/fixedSystem'
+              marineAnimal:
+                $ref: '#/components/examples/marineAnimal'
+              subSurfaceAuto:
+                $ref: '#/components/examples/subSurfaceAuto'
+              shipBased:
+                $ref: '#/components/examples/shipBased'
+              otherSurfaceAuto:
+                $ref: '#/components/examples/otherSurfaceAuto'
+      responses:
+        '200':
+          description: Success response, records need to be check individually for success. Each records in the returned array will specify to which input element they apply to.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    input:
+                      $ref: '#/components/schemas/IdInput'
+                    success:
+                      type: boolean
+                      description: true if this record was processed successfully, false otherwise.
+                    message:
+                      type: string
+                      description: If this records generated an error or a warning, this will be indicated here.
+                    wigosRef:
+                      type: string
+                      description: The generated WIGOS identifier.
+                    ref:
+                      type: string
+                      description: The generated OceanOPS identifier.
+                    gtsId:
+                      type: string
+                      description: The generated WMO/GTS identifier if not provided, otherwise confirming the provided one.
+                    batchRef:
+                      type: string
+                      description: The generated batch reference, will be the same for every instruments of the same model within a request.
+                    model:
+                      type: string
+                      description: The model of this instrument (repeated if provided as input and validated, auto-derived otherwsie).
+              examples:
+                argo:
+                  summary: An example of response for 2 Argo floats
+                  description: Argo float request with a specified model, a batch status, and given coordinates.
+                  value:
+                    - input:
+                        program: Argo CANADA
+                        startDate: "2022-06-15T12:00:00"
+                        model: APEX
+                        batchStatus: IN STOCK
+                        longitude: -52
+                        latitude: 36
+                      success: true
+                      message:
+                      gtsId: "1923456"
+                      wigosRef: 0-22000-0-1923456
+                      ref: "1923456"
+                      batchRef: APEX-2022-01-26T15:32:22
+                      model: APEX
+                    - input:
+                        program: Argo CANADA
+                        startDate: "2022-06-16T12:00:00"
+                        model: APEX
+                        batchStatus: IN STOCK
+                        longitude: -51
+                        latitude: 30
+                      success: true
+                      message: ""
+                      gtsId: "1965432"
+                      wigosRef: 0-22000-0-1965432
+                      ref: "1965432"
+                      batchRef: APEX-2022-01-26T15:32:22
+                      model: APEX
+                drifter:
+                  summary: An example of response for a surface drifter
+                  description: Surface drifter request with only the program and a start date.
+                  value:
+                    - input:
+                        program: MF-DB
+                        startDate: "2022-06-15T12:00:00"
+                      success: true
+                      message: "Model not provided or invalid, taking default program model."
+                      gtsId: "1823456"
+                      wigosRef: 0-22000-0-1823456
+                      ref: "1823456"
+                      batchRef: SVP-2022-01-26T15:32:22
+                      model: SVP
+                mooringExistingGTSID:
+                  summary: An example of response for a mooring w/ existing GTS ID
+                  description: Mooring request providing the GTS identifier. The response will contain the WIGOS and OceanOPS identifier (based on the GTS identifier and an increment).
+                  value:
+                    - input:
+                        gtsId: "3801001"
+                        program: OS-GEOMAR
+                        model: Subsurface Mooring Custom
+                        startDate: "2019-10-30T20:37:00"
+                        latitude: -13
+                        longitude: -37
+                      success: true
+                      message:
+                      gtsId: "3801001"
+                      wigosRef: 0-22000-14-3801001
+                      ref: "3801001_14"
+                      batchRef: Subsurface Mooring Custom-2022-01-26T15:32:22
+                      model: Subsurface Mooring Custom
+        '401':
+          description: Not authorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+              example:
+                errorMessage: "Authentication required"
+        '500':
+          description: Internal error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  errorMessage:
+                    type: string
+              example:
+                errorMessage: "Unexpected error while allocating an identifier, please contact OceanOPS"
+      security:
+        - apiKeyId: []
+        - apiKeyToken: []
+  
