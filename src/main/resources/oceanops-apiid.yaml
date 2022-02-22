@@ -37,7 +37,7 @@ components:
             If not provided, the API will attempt to infer it from the program's default setup.
         batchStatus:
           type: string
-          description: If applicable, specify the status of this batch of instruments. Value should be one of "FUNDED", "ORDERED", "IN STOCK".
+          description: If applicable, specify the [status of this batch of instruments](https://www.ocean-ops.org/api/1/help/?param=batchstatus).
         longitude:
           type: number
           description: Longitude in decimal number WGS84. If not provided, the API will attempt to infer it from the program's lead agency, or will default to 0.
