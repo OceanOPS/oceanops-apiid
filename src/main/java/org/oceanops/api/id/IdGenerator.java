@@ -447,6 +447,7 @@ public class IdGenerator {
 				localBatchStatus = dataContext.localObject(this.batchStatus);
 				localBatchStatus.setObjectContext(dataContext);
 			}
+			Integer[] monitoringCriteria = this.determineCriteriaByNetwork(localProgram, localModel);
 
 			Double lat = this.input.getLatitude();
 			Double lon = this.input.getLongitude();
@@ -488,6 +489,8 @@ public class IdGenerator {
 			ptf.setPtfIdentifiers(pid);
 			ptf.setPtfDepl(depl);
 			ptf.setDescription("CREATED BY API ID");
+			ptf.setActivityCriterion(monitoringCriteria[0]);
+			ptf.setClosureCriterion(monitoringCriteria[1]);
 
 			if(this.input.getSerialNo() != null){
 				PtfHardware ph = dataContext.newObject(PtfHardware.class);
@@ -545,4 +548,60 @@ public class IdGenerator {
             wmoIsValid = true;
 		return !wmoIsValid;
 	}
+
+	/**
+	 * Determines, based on a program and model, the monitoring criteria to save foe the newly created platform.
+	 * @param program the program to which this platform belongs to.
+	 * @param model the model specified for this platform.
+	 * @return an array of two Integer, the firstone being the atcivity criterion, the second one the closure criterion
+	 */
+	private Integer[] determineCriteriaByNetwork(Program program, PtfModel model) {
+    	Integer activityCriterion = null, closureCriterion = null;
+		String actConstantName, closConstantName;	
+		String networkName = program.getNetwork().getNameShort().toUpperCase();	
+		if(networkName.equals("GO-SHIP") || networkName.equals("GOSHIP")){
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_GOSHIP";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_GOSHIP";
+		}
+		else if(networkName.equals("OCEANGLIDERS") || networkName.equals("OCEANGLIDER") || networkName.equals("GLIDERS")){
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_GLIDERS";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_GLIDERS";
+		}
+		else if(networkName.equals("ARGO")){
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_ARGO";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_ARGO";
+		}
+		else if(networkName.equals("DBCP")){
+			if(model.getPtfType().getPtfFamily().getId() == 3 || model.getPtfType().getPtfFamily().getId() == 3){
+				actConstantName = "COMMONS.ACTIVITY_CRITERION_DBCP_MB";
+				closConstantName = "COMMONS.CLOSURE_CRITERION_DBCP_MB";
+			}
+			else{
+				actConstantName = "COMMONS.ACTIVITY_CRITERION_DBCP";
+				closConstantName = "COMMONS.CLOSURE_CRITERION_DBCP";
+			}
+		}
+		else if(networkName.equals("SOT")){
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_SOT";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_SOT";
+		}
+		else if(networkName.equals("OCEANSITES")){
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_OCEANSITES";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_OCEANSITES";
+		}
+		else{
+			actConstantName = "COMMONS.ACTIVITY_CRITERION_JCOMMOPS";
+			closConstantName = "COMMONS.CLOSURE_CRITERION_JCOMMOPS";
+		}
+
+		// Fetching criteria from the DB
+		Object[] result = SQLSelect.columnQuery("SELECT util.get_constant_value(#bind($actConst)), util.get_constant_value(#bind($cloConst)) from dual", Integer.class, Integer.class)
+			.param("actConst", actConstantName)
+			.param("cloConst", closConstantName).selectOne(context);
+		activityCriterion = (Integer)result[0];
+		closureCriterion = (Integer)result[1];
+		
+		Integer[] res = {activityCriterion, closureCriterion};
+		return res;
+    }
 }
