@@ -10,7 +10,6 @@ import javax.ws.rs.core.Response.Status;
 
 import org.apache.cayenne.BaseContext;
 import org.apache.cayenne.ObjectContext;
-import org.apache.cayenne.query.EJBQLQuery;
 import org.apache.cayenne.query.ObjectSelect;
 import org.apache.cayenne.query.SQLSelect;
 import org.apache.cayenne.query.SelectById;
@@ -530,18 +529,18 @@ public class IdGenerator {
             }
             else {		
                 String sql = null;
-                sql = "select id from wmo where wmo = ?1 AND util.dates_overlap(start_date, end_date, ?2, ?3) = 1";
-                
-                EJBQLQuery query = new EJBQLQuery(sql);
-                query.setParameter(1, this.input.getGtsId());
-                query.setParameter(2, this.input.getStartDate());
-                query.setParameter(3, this.input.getEndDate());
+                sql = "select 1 from wmo where wmo = #bind($wmo) AND util.dates_overlap(start_date, end_date, #bind($startDate), #bind($endDate)) = 1";
+				Integer result = SQLSelect.scalarQuery(sql, Integer.class)
+					.param("wmo", this.input.getGtsId())
+					.param("startDate", this.input.getStartDate())
+					.param("endDate", this.input.getEndDate()).selectOne(context);
 
-                int count = this.context.performQuery(query).size();
-            
-                if(count == 0){
-                    wmoIsValid = true;
-                }
+				if(result != null){
+					wmoIsValid = false;
+				}
+				else{
+					wmoIsValid = true;
+				}
             }
         }
         else 
