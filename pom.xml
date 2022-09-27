@@ -162,6 +162,6 @@
 		<jersey.version>2.35</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.scm.id>oceanops-scm-server</project.scm.id>
-		<java.version>14</java.version>
+		<java.version>17</java.version>
 	</properties>
 </project>
