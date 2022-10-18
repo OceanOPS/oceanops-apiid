@@ -529,7 +529,7 @@ public class IdGenerator {
             }
             else {		
                 String sql = null;
-                sql = "select 1 from wmo where wmo = #bind($wmo) AND util.dates_overlap(start_date, end_date, #bind($startDate), #bind($endDate)) = 1";
+                sql = "select 1 from wmo where wmo = #bind($wmo) AND util.dates_overlap(start_date, end_date, #bind($startDate), #bind($endDate)) = 1 and rownum = 1";
 				Integer result = SQLSelect.scalarQuery(sql, Integer.class)
 					.param("wmo", this.input.getGtsId())
 					.param("startDate", this.input.getStartDate())
