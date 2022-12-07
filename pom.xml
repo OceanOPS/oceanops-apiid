@@ -46,13 +46,13 @@
 				<plugin>
 					<groupId>org.eclipse.jetty</groupId>
 					<artifactId>jetty-maven-plugin</artifactId>
-					<version>10.0.7</version>
+					<version>11.0.12</version>
 					<configuration>
 						<scan>10</scan>
 						<webApp>
 							<contextPath>/${project.build.finalName}</contextPath>
 						</webApp>
-						<jettyXmls>C:/Users/alize/Workspace/dev/jetty.xml</jettyXmls>
+						<jettyXmls>C:/Users/alize.GROUPCLS/Workspace/dev/jetty.xml</jettyXmls>
 					</configuration>
 					<dependencies>
 						<dependency>
@@ -100,13 +100,13 @@
 		<dependency>
 			<groupId>org.oceanops</groupId>
 			<artifactId>api</artifactId>
-			<version>1.8</version>
+			<version>1.10-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>	
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -159,7 +159,7 @@
 	<properties>
 		<maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
-		<jersey.version>2.35</jersey.version>
+		<jersey.version>3.1.0</jersey.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.scm.id>oceanops-scm-server</project.scm.id>
 		<java.version>17</java.version>

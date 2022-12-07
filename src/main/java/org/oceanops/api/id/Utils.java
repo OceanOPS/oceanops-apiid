@@ -3,6 +3,7 @@ package org.oceanops.api.id;
 import org.apache.cayenne.BaseContext;
 import org.apache.cayenne.ObjectContext;
 
+
 /**
  * Utility class
  */

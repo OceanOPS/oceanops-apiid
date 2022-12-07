@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 import javax.naming.NamingException;
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.InternalServerErrorException;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.InternalServerErrorException;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.apache.cayenne.BaseContext;
 import org.apache.cayenne.ObjectContext;
@@ -15,18 +15,18 @@ import org.apache.cayenne.query.SQLSelect;
 import org.apache.cayenne.query.SelectById;
 import org.oceanops.api.Authorization;
 import org.oceanops.api.exceptions.MissingMetadataException;
-import org.oceanops.api.orm.Agency;
-import org.oceanops.api.orm.NetworkPtf;
-import org.oceanops.api.orm.Program;
-import org.oceanops.api.orm.ProgramAgency;
-import org.oceanops.api.orm.Ptf;
-import org.oceanops.api.orm.PtfBatchStatus;
-import org.oceanops.api.orm.PtfDeployment;
-import org.oceanops.api.orm.PtfHardware;
-import org.oceanops.api.orm.PtfIdentifiers;
-import org.oceanops.api.orm.PtfModel;
-import org.oceanops.api.orm.PtfStatus;
-import org.oceanops.api.orm.Wmo;
+import org.oceanops.orm.Agency;
+import org.oceanops.orm.NetworkPtf;
+import org.oceanops.orm.Program;
+import org.oceanops.orm.ProgramAgency;
+import org.oceanops.orm.Ptf;
+import org.oceanops.orm.PtfBatchStatus;
+import org.oceanops.orm.PtfDeployment;
+import org.oceanops.orm.PtfHardware;
+import org.oceanops.orm.PtfIdentifiers;
+import org.oceanops.orm.PtfModel;
+import org.oceanops.orm.PtfStatus;
+import org.oceanops.orm.Wmo;
 
 public class IdGenerator {
 	private ObjectContext context;

@@ -4,25 +4,25 @@ import org.apache.cayenne.ObjectContext;
 import org.apache.cayenne.query.SelectById;
 import org.oceanops.api.Authentication;
 
-import javax.ws.rs.POST;
-import javax.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.POST;
+import jakarta.ws.rs.NotAuthorizedException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ws.rs.ClientErrorException;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.ws.rs.ClientErrorException;
+import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import org.oceanops.api.exceptions.MissingMetadataException;
-import org.oceanops.api.orm.NcLevel;
-import org.oceanops.api.orm.NcNotification;
-import org.oceanops.api.orm.NcTopic;
+import org.oceanops.orm.NcLevel;
+import org.oceanops.orm.NcNotification;
+import org.oceanops.orm.NcTopic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
