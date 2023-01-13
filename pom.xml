@@ -58,7 +58,7 @@
 						<dependency>
 							<groupId>com.oracle.database.jdbc</groupId>
 							<artifactId>ojdbc8</artifactId>
-							<version>21.7.0.0</version>
+							<version>21.8.0.0</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -84,7 +84,7 @@
 			<dependency>
 				<groupId>org.junit</groupId>
 				<artifactId>junit-bom</artifactId>
-				<version>5.9.1</version>
+				<version>5.9.2</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>org.oceanops</groupId>
 			<artifactId>api</artifactId>
-			<version>1.10-SNAPSHOT</version>
+			<version>1.11</version>
 			<classifier>classes</classifier>
 		</dependency>	
 		<dependency>
@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<version>2.0.3</version>
+			<version>2.0.6</version>
 		</dependency>
 		<dependency> 
 			<groupId>org.apache.logging.log4j</groupId> 
@@ -153,7 +153,7 @@
 		<dependency>
 			<groupId>com.oracle.database.jdbc</groupId>
 			<artifactId>ojdbc8</artifactId>
-			<version>21.7.0.0</version>
+			<version>21.8.0.0</version>
 		</dependency>
 	</dependencies>
 	<properties>
