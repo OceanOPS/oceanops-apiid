@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>org.oceanops</groupId>
 			<artifactId>api</artifactId>
-			<version>1.11</version>
+			<version>1.10</version>
 			<classifier>classes</classifier>
 		</dependency>	
 		<dependency>
