@@ -15,6 +15,7 @@ import jakarta.ws.rs.ClientErrorException;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -34,16 +35,20 @@ public class WebServiceManager {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Path("getid")
 	@Produces(MediaType.APPLICATION_JSON + ";charset=utf-8")
-	public List<IdResponse> getID(final List<IdInput> inputs) throws Exception {
+	public List<IdResponse> getID(final List<IdInput> inputs, @QueryParam("norecord") String norecord) throws Exception {
 		ArrayList<IdResponse> response = null;
+		
+		boolean generateOnly = norecord != null;
+		logger.trace(generateOnly? "norecord": "normal");
 
 		if(Authentication.isAuthenticated() == true){
 			response = new ArrayList<IdResponse>();
 			String batchRequestRefDate =  org.oceanops.api.Utils.GetIsoDate(LocalDateTime.now());
 			for (IdInput input : inputs) {
+				logger.trace(input.getProgram());
 				IdResponse curResponse;
 				try{
-					IdGenerator gen = new IdGenerator(input, batchRequestRefDate);
+					IdGenerator gen = new IdGenerator(input, batchRequestRefDate, generateOnly);
 					curResponse = new IdResponse(input, true, gen.getMessage(), gen.getWigosRef(), gen.getRef(), gen.getGtsId(), gen.getBatchRef(), gen.getModelName());
 				}
 				catch(ClientErrorException e){

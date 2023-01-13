@@ -42,6 +42,8 @@ public class IdGenerator {
 	private StringBuilder returnMessage;
 	private String batchRefDate;
 	private String batchRef;
+
+	private boolean generateOnly;
 	
 	/**
 	 * Calls the database function generating a random SOT ID, locking it for further submission
@@ -197,11 +199,12 @@ public class IdGenerator {
 	 * Main constructor, parses, checks the inputs, and generates the identifers.
 	 * @param input The input parameters, stored in a {@link IdInput} object.
 	 * @param batchRefDate A string representing the date associated to this request. 
+	 * @param generateOnly A boolean telling if a Platform record should be created or not following the ID generation.
 	 * @throws SQLException
 	 * @throws NamingException
 	 * @throws BadRequestException
 	 */
-	public IdGenerator(IdInput input, String batchRefDate) throws SQLException, NamingException, ClientErrorException, MissingMetadataException {	
+	public IdGenerator(IdInput input, String batchRefDate, boolean generateOnly) throws SQLException, NamingException, ClientErrorException, MissingMetadataException {	
 		this.context = Utils.getCayenneContext();
 		this.input = input;
 		this.gtsId = null;
@@ -210,6 +213,7 @@ public class IdGenerator {
 		this.requestedType = null;
 		this.batchRefDate = batchRefDate;
 		this.returnMessage = new StringBuilder();
+		this.generateOnly = generateOnly;
 		
 		// Parsing input
 		this.parseInput();
@@ -259,7 +263,8 @@ public class IdGenerator {
 		this.generate();
 		
 		// Creating platform records
-		this.createPtfRecord();
+		if(!this.generateOnly)
+			this.createPtfRecord();
 	}
 
 	/**
