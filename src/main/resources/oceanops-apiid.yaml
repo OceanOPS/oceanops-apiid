@@ -47,6 +47,9 @@ components:
         serialNo:
           type: string
           description: The serial number of this instrument.
+        name:
+          type: string
+          description: The name of this instrument.
         internalId:
           type: string
           description: Internal/user identifier associated with this instrument, if any.

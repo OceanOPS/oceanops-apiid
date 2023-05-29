@@ -495,6 +495,8 @@ public class IdGenerator {
 			ptf.setDescription("CREATED BY API ID");
 			ptf.setActivityCriterion(monitoringCriteria[0]);
 			ptf.setClosureCriterion(monitoringCriteria[1]);
+			if(this.input.getName() != null)
+				ptf.setName(this.input.getName());
 
 			if(this.input.getSerialNo() != null){
 				PtfHardware ph = dataContext.newObject(PtfHardware.class);

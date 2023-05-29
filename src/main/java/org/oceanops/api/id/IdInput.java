@@ -13,9 +13,18 @@ public class IdInput {
     private Double longitude = null;
     private Double latitude = null;
     private String serialNo = null;
+    private String name = null;
     private String internalId = null;
     private LocalDateTime startDate = null;
     private LocalDateTime endDate = null;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getSerialNo() {
         return this.serialNo;
