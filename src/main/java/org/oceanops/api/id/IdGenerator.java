@@ -51,7 +51,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getShipBasedID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_ship_based_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_ship_based_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -62,7 +62,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getProfilingFloatID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_profiling_float_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_profiling_float_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -73,7 +73,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getFixedSystemID(Double lon, Double lat) throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_fixed_system_wmo_id(#bind($lon), #bind($lat)) from dual", String.class)
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_fixed_system_wmo_id(#bind($lon), #bind($lat))", String.class)
 		.param("lon", lon)
 		.param("lat", lat).selectOne(context);
 		
@@ -86,7 +86,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getSurfaceDrifterID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_surface_drifter_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_surface_drifter_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -97,7 +97,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getSubSurfaceAutoID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_sub_surface_auto_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_sub_surface_auto_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -108,7 +108,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getMarineAnimalID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_marine_animal_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_marine_animal_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -118,7 +118,7 @@ public class IdGenerator {
 	 * @throws SQLException
 	 */
 	private String getSurfaceAutoOtherID() throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_surface_auto_other_wmo_id() from dual", String.class).selectOne(context);
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.GET_surface_auto_other_wmo_id()", String.class).selectOne(context);
 		
 		return result;
 	}
@@ -130,7 +130,7 @@ public class IdGenerator {
 	 * @return The computed WIGOS identifier
 	 */
 	private String getWIGOSRef(String ref) throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_wigosid_from_ref(#bind($ref)) from dual", String.class)
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_wigosid_from_ref(#bind($ref))", String.class)
 			.param("ref", ref)
 			.selectOne(context);
 		
@@ -142,7 +142,7 @@ public class IdGenerator {
 	 * @return The computed reference
 	 */
 	private String getRefFromWmoId(String wmoId) throws SQLException {
-		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_ref_from_wmo(#bind($wmoId)) from dual", String.class)
+		String result = SQLSelect.scalarQuery("SELECT id_mgmt.get_ref_from_wmo(#bind($wmoId))", String.class)
 			.param("wmoId", wmoId)
 			.selectOne(context);
 		
@@ -536,7 +536,7 @@ public class IdGenerator {
             }
             else {		
                 String sql = null;
-                sql = "select 1 from wmo where wmo = #bind($wmo) AND util.dates_overlap(start_date, end_date, #bind($startDate), #bind($endDate)) = 1 and rownum = 1";
+                sql = "select 1 from wmo where wmo = #bind($wmo) AND util.dates_overlap(start_date, end_date, #bind($startDate), #bind($endDate)) = 1 LIMIT 1";
 				Integer result = SQLSelect.scalarQuery(sql, Integer.class)
 					.param("wmo", this.input.getGtsId())
 					.param("startDate", this.input.getStartDate())
@@ -563,47 +563,37 @@ public class IdGenerator {
 	 */
 	private Integer[] determineCriteriaByNetwork(Program program, PtfModel model) {
     	Integer activityCriterion = null, closureCriterion = null;
-		String actConstantName, closConstantName;	
+		String sqlCriteria;	
 		String networkName = program.getNetwork().getNameShort().toUpperCase();	
 		if(networkName.equals("GO-SHIP") || networkName.equals("GOSHIP")){
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_GOSHIP";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_GOSHIP";
+			sqlCriteria = "select commons.activity_criterion_goship(), commons.closure_criterion_goship()";
 		}
 		else if(networkName.equals("OCEANGLIDERS") || networkName.equals("OCEANGLIDER") || networkName.equals("GLIDERS")){
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_GLIDERS";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_GLIDERS";
+			sqlCriteria = "select commons.ACTIVITY_CRITERION_GLIDERS(), commons.CLOSURE_CRITERION_GLIDERS()";
 		}
 		else if(networkName.equals("ARGO")){
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_ARGO";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_ARGO";
+			sqlCriteria = "select commons.ACTIVITY_CRITERION_ARGO(), commons.CLOSURE_CRITERION_ARGO()";
 		}
 		else if(networkName.equals("DBCP")){
 			if(model.getPtfType().getPtfFamily().getId() == 3 || model.getPtfType().getPtfFamily().getId() == 3){
-				actConstantName = "COMMONS.ACTIVITY_CRITERION_DBCP_MB";
-				closConstantName = "COMMONS.CLOSURE_CRITERION_DBCP_MB";
+				sqlCriteria = "select commons.ACTIVITY_CRITERION_DBCP_MB(), commons.CLOSURE_CRITERION_DBCP_MB()";
 			}
 			else{
-				actConstantName = "COMMONS.ACTIVITY_CRITERION_DBCP";
-				closConstantName = "COMMONS.CLOSURE_CRITERION_DBCP";
+				sqlCriteria = "select commons.ACTIVITY_CRITERION_DBCP(), commons.CLOSURE_CRITERION_DBCP()";
 			}
 		}
 		else if(networkName.equals("SOT")){
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_SOT";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_SOT";
+			sqlCriteria = "select commons.ACTIVITY_CRITERION_SOT(), commons.CLOSURE_CRITERION_SOT()";
 		}
 		else if(networkName.equals("OCEANSITES")){
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_OCEANSITES";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_OCEANSITES";
+			sqlCriteria = "select commons.ACTIVITY_CRITERION_OCEANSITES(), commons.CLOSURE_CRITERION_OCEANSITES()";
 		}
 		else{
-			actConstantName = "COMMONS.ACTIVITY_CRITERION_JCOMMOPS";
-			closConstantName = "COMMONS.CLOSURE_CRITERION_JCOMMOPS";
+			sqlCriteria = "select 0, 0";
 		}
 
 		// Fetching criteria from the DB
-		Object[] result = SQLSelect.columnQuery("SELECT util.get_constant_value(#bind($actConst)), util.get_constant_value(#bind($cloConst)) from dual", Integer.class, Integer.class)
-			.param("actConst", actConstantName)
-			.param("cloConst", closConstantName).selectOne(context);
+		Object[] result = SQLSelect.columnQuery(sqlCriteria, Integer.class, Integer.class).selectOne(context);
 		activityCriterion = (Integer)result[0];
 		closureCriterion = (Integer)result[1];
 		

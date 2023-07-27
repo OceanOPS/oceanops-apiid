@@ -56,9 +56,9 @@
 					</configuration>
 					<dependencies>
 						<dependency>
-							<groupId>com.oracle.database.jdbc</groupId>
-							<artifactId>ojdbc8</artifactId>
-							<version>23.2.0.0</version>
+							<groupId>org.postgresql</groupId>
+							<artifactId>postgresql</artifactId>
+							<version>42.6.0</version>
 						</dependency>
 					</dependencies>
 				</plugin>
@@ -88,7 +88,7 @@
 		<dependency>
 			<groupId>org.oceanops</groupId>
 			<artifactId>api</artifactId>
-			<version>1.10</version>
+			<version>1.12-SNAPSHOT</version>
 			<classifier>classes</classifier>
 		</dependency>	
 		<dependency>
@@ -139,9 +139,9 @@
 			<version>20230227</version>
 		</dependency>
 		<dependency>
-			<groupId>com.oracle.database.jdbc</groupId>
-			<artifactId>ojdbc8</artifactId>
-			<version>23.2.0.0</version>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.6.0</version>
 		</dependency>
 	</dependencies>
 	<properties>

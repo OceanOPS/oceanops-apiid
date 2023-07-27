@@ -15,7 +15,7 @@ import org.apache.cayenne.ashwood.WeightedAshwoodEntitySorter;
 import org.apache.cayenne.configuration.server.ServerRuntime;
 import org.apache.cayenne.dba.PkGenerator;
 import org.apache.cayenne.map.EntitySorter;
-import org.oceanops.api.db.OraclePkGeneratorCustom;
+import org.oceanops.api.db.PGPkGeneratorCustom;
 
 public class CayenneFilter implements Filter {
 	private String pathToBeIgnored;
@@ -45,7 +45,7 @@ public class CayenneFilter implements Filter {
 	}
 
 	private void initCayenneRuntime(){
-		OraclePkGeneratorCustom pkgen = new OraclePkGeneratorCustom();
+		PGPkGeneratorCustom pkgen = new PGPkGeneratorCustom();
 		pkgen.setPkCacheSize(1);
 
     	this.cayenneRuntime = ServerRuntime.builder()
