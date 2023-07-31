@@ -52,7 +52,6 @@
 						<webApp>
 							<contextPath>/${project.build.finalName}</contextPath>
 						</webApp>
-						<jettyXmls>C:/Users/alize/Workspace/dev/jetty.xml</jettyXmls>
 					</configuration>
 					<dependencies>
 						<dependency>
