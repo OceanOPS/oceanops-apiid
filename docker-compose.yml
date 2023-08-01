@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-    dashboard:
-        container_name: apiid
-        image: apiid
+    oceanops-apiid:
+        container_name: oceanops-apiid
+        image: oceanops-apiid
         build:
             context: .
             dockerfile: Dockerfile
@@ -12,3 +12,10 @@ services:
             - "8080:8080"
         environment:
             JAVA_OPTIONS: "--add-exports java.base/sun.security.action=ALL-UNNAMED -Duser.timezone=UTC -Dcayenne.jdbc.driver=${DB_DRIVER} -Dcayenne.jdbc.url=${DB_URL} -Dcayenne.jdbc.username=${DB_USERNAME} -Dcayenne.jdbc.password=${DB_PASSWORD}"
+        networks:
+            - oceanops-network
+            
+networks:
+    network1:
+        name: oceanops-network
+        external: true
