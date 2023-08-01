@@ -9,12 +9,12 @@ services:
             dockerfile: Dockerfile
         restart: always
         ports:
-            - "8080:8080"
+            - "8081:8080"
         environment:
             JAVA_OPTIONS: "--add-exports java.base/sun.security.action=ALL-UNNAMED -Duser.timezone=UTC -Dcayenne.jdbc.driver=${DB_DRIVER} -Dcayenne.jdbc.url=${DB_URL} -Dcayenne.jdbc.username=${DB_USERNAME} -Dcayenne.jdbc.password=${DB_PASSWORD}"
         networks:
-            - oceanops-network
-            
+            - network1
+
 networks:
     network1:
         name: oceanops-network
