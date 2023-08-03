@@ -1,9 +1,9 @@
 version: "3.9"
 
 services:
-    oceanops-apiid:
-        container_name: oceanops-apiid
-        image: oceanops-apiid
+    oceanops-api-idgen:
+        container_name: oceanops-api-idgen
+        image: oceanops-api-idgen
         build:
             context: .
             dockerfile: Dockerfile
