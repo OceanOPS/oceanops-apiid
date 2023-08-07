@@ -1,4 +1,5 @@
-target
+target/*
+!target/oceanops-apiid.war
 .settings
 .factoryPath
 .env
