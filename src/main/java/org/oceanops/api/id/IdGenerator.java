@@ -415,9 +415,9 @@ public class IdGenerator {
 			throw new ClientErrorException("WMO ID type not supported: " + this.requestedType, Status.BAD_REQUEST);
 		}
 		if(this.ref != null){
-			// Allocating a WIGOS REF only for automated GTS ID
-			if(this.input.getGtsId() == null && !this.ref.startsWith("TMP"))
+			if(!this.ref.startsWith("TMP")){
 				this.wigosRef = this.getWIGOSRef(this.ref);
+			}
 		}
 	}
 
